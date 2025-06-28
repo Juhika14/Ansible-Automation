@@ -14,7 +14,7 @@ pipeline {
       agent { label 'Apache' }
       steps {
         dir('/home/ubuntu/jenkins/workspace/Test-PRT-Website') {
-          sh 'ansible-playbook play.yaml'
+          sh 'ansible-playbook -i inventory.ini play.yaml'
         }
       }
     }
@@ -23,16 +23,17 @@ pipeline {
       agent { label 'Nginx' }
       steps {
         dir('/home/ubuntu/jenkins/workspace/Test-PRT-Website') {
-          sh 'ansible-playbook play.yaml'
+          sh 'ansible-playbook -i inventory.ini play.yaml'
         }
       }
     }
   }
 
   post {
-    success { echo 'All playbooks completed succesfully!' }
-    failure { echo 'Build failed—check log for errors.' }
+    success { echo 'Playbooks ran successfully!' }
+    failure { echo 'Build failed—check console output.' }
   }
 }
+
 
 
