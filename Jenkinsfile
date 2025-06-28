@@ -1,44 +1,48 @@
 pipeline {
-    agent none
+  agent none
 
-    stages {
-        stage('Clone Repository') {
-            agent any
-            steps {
-                git branch: 'main',
-                    url: 'https://github.com/Juhika14/Ansible-Automation.git'
-            }
-        }
-
-        stage('Run Ansible on Apache Agent') {
-            agent { label 'Apache' }
-            steps {
-                sshagent(['ansible']) {
-                    dir('/home/ubuntu/jenkins/workspace/Test-PRT-Website') {
-                        sh 'ansible-playbook play.yaml'
-                    }
-                }
-            }
-        }
-
-        stage('Run Ansible on Nginx Agent') {
-            agent { label 'Nginx' }
-            steps {
-                sshagent(['ansible']) {
-                    dir('/home/ubuntu/jenkins/workspace/Test-PRT-Website') {
-                        sh 'ansible-playbook play.yaml'
-                    }
-                }
-            }
-        }
+  stages {
+    stage('Clone Repository') {
+      agent any
+      steps {
+        git branch: 'main', url: 'https://github.com/Juhika14/Ansible-Automation.git'
+      }
     }
 
-    post {
-        success {
-            echo 'Playbook completed successfully on both agents.'
+    stage('Run Ansible on Apache Agent') {
+      agent { label 'Apache' }
+      steps {
+        withCredentials([sshUserPrivateKey(credentialsId: 'ansible', keyFileVariable: 'KEYFILE')]) {
+          dir('/home/ubuntu/jenkins/workspace/Test-PRT-Website') {
+            sh '''
+              eval "$(ssh-agent -s)"
+              ssh-add "$KEYFILE"
+              ansible-playbook play.yaml -i inventory.ini
+            '''
+          }
         }
-        failure {
-            echo 'Build failed. Check logs for issues.'
-        }
+      }
     }
+
+    stage('Run Ansible on Nginx Agent') {
+      agent { label 'Nginx' }
+      steps {
+        withCredentials([sshUserPrivateKey(credentialsId: 'ansible', keyFileVariable: 'KEYFILE')]) {
+          dir('/home/ubuntu/jenkins/workspace/Test-PRT-Website') {
+            sh '''
+              eval "$(ssh-agent -s)"
+              ssh-add "$KEYFILE"
+              ansible-playbook play.yaml -i inventory.ini
+            '''
+          }
+        }
+      }
+    }
+  }
+
+  post {
+    success { echo '✅ Playbooks completed successfully.' }
+    failure { echo '❌ Build failed—check console output.' }
+  }
 }
+
