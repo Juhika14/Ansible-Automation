@@ -1,5 +1,5 @@
 provider "aws" {
-  region     = "us-east-2"
+  region     = "us-east-1"
   access_key = "" # Add your AWS access key
   secret_key = "" # Add your AWS secret key
 }
@@ -25,7 +25,7 @@ resource "aws_subnet" "my_subnet" {
   vpc_id                  = aws_vpc.myvpc.id
   cidr_block              = "10.0.1.0/24"
   map_public_ip_on_launch = true
-  availability_zone       = "us-east-2a"
+  availability_zone       = "us-east-1a"
 
   tags = {
     Name = "PRT-Subnet"
@@ -93,9 +93,9 @@ resource "aws_security_group" "mysg" {
 
 # Define reusable instance resource
 resource "aws_instance" "inst1" {
-  ami                         = "" # Insert latest Amazon Linux 2 AMI
+  ami                         = "ami-0a7d80731ae1b2435" # Insert latest Amazon Linux 2 AMI
   instance_type               = "t2.medium"
-  key_name                    = "richa"
+  key_name                    = "juhikaishaan"
   subnet_id                   = aws_subnet.my_subnet.id
   vpc_security_group_ids      = [aws_security_group.mysg.id]
   associate_public_ip_address = true
@@ -106,28 +106,28 @@ resource "aws_instance" "inst1" {
 }
 
 resource "aws_instance" "inst2" {
-  ami                         = "" # Insert latest Amazon Linux 2 AMI
+  ami                         = "ami-0a7d80731ae1b2435" # Insert latest Amazon Linux 2 AMI
   instance_type               = "t2.medium"
-  key_name                    = "richa"
+  key_name                    = "juhikaishaan"
   subnet_id                   = aws_subnet.my_subnet.id
   vpc_security_group_ids      = [aws_security_group.mysg.id]
   associate_public_ip_address = true
 
   tags = {
-    Name = "J-M"
+    Name = "Apache"
   }
 }
 
 resource "aws_instance" "inst3" {
-  ami                         = "" # Insert latest Amazon Linux 2 AMI
+  ami                         = "ami-0a7d80731ae1b2435" # Insert latest Amazon Linux 2 AMI
   instance_type               = "t2.medium"
-  key_name                    = "richa"
+  key_name                    = "juhikaishaan"
   subnet_id                   = aws_subnet.my_subnet.id
   vpc_security_group_ids      = [aws_security_group.mysg.id]
   associate_public_ip_address = true
 
   tags = {
-    Name = "J-S"
+    Name = "Nginx"
   }
 }
 
