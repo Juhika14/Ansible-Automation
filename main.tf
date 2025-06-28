@@ -134,15 +134,12 @@ resource "aws_instance" "inst3" {
 # Allocate Elastic IPs
 resource "aws_eip" "eip1" {
   instance = aws_instance.inst1.id
-  vpc      = true
 }
 
 resource "aws_eip" "eip2" {
   instance = aws_instance.inst2.id
-  vpc      = true
 }
 
 resource "aws_eip" "eip3" {
   instance = aws_instance.inst3.id
-  vpc      = true
 }
